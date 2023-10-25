@@ -1,0 +1,23 @@
+In a Flask application that uses Flask-Login for user authentication, when you call `current_user`, you typically get an instance of your user model representing the currently logged-in user. You can access various attributes and properties of the user model through this object. The specific attributes and properties you can fetch depend on how your user model is defined.
+
+Here are some common attributes and properties that you might access through `current_user`, assuming you have a user model with these fields:
+
+1. `current_user.id`: This typically returns the user's unique identifier, such as their database ID.
+
+2. `current_user.username`: If your user model has a "username" field, you can access the user's username.
+
+3. `current_user.email`: If your user model has an "email" field, you can access the user's email address.
+
+4. `current_user.name`: If your user model has a "name" or "full_name" field, you can access the user's full name.
+
+5. `current_user.is_authenticated`: This is a property that returns `True` if the user is authenticated (logged in) and `False` if they are not.
+
+6. `current_user.is_active`: This is a property that returns `True` if the user's account is active. You might use this to check if a user is banned or inactive.
+
+7. `current_user.is_anonymous`: This is a property that returns `True` for anonymous users (users who are not logged in).
+
+8. Any other fields or properties defined in your user model: Depending on your user model's definition, you can access any additional fields you've added, like profile information, roles, or any other user-specific data.
+
+The specific attributes you can access through `current_user` depend on your user model's structure. It's important to customize your user model to include the fields and properties that are relevant to your application's requirements.
+
+
