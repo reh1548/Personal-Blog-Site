@@ -3,7 +3,7 @@ Flask==2.2.5
 Flask_CKEditor==0.4.6
 Flask_Gravatar==0.5.0
 Flask_Login==0.6.2
-flask_sqlalchemy==3.1.1
+flask_sqlalchemy==3.0.5
 Flask_WTF==1.1.1
 SQLAlchemy==2.0.21
 Werkzeug==3.0.1
