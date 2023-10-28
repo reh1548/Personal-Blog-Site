@@ -8,12 +8,19 @@ from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import relationship
+from dotenv import load_dotenv
+load_dotenv()
 import os
+import smtplib
 # Import your forms from the forms.py
 from forms import *
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ.get("APP_API_KEY")
+my_mail = os.environ.get("MY_MAIL")
+password = os.environ.get("MY_MAIL_PASSWORD")
+recipient_mail = os.environ.get("RECIPIENT_MAIL")
+
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
@@ -252,9 +259,32 @@ def about():
     return render_template("about.html", current_user=current_user)
 
 
-@app.route("/contact")
+
+
+def message(msg):
+    with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+        connection.starttls()
+        connection.login(user=my_mail, password=password)
+        connection.sendmail(
+            from_addr=my_mail, 
+            to_addrs=recipient_mail, 
+            msg=msg
+        )
+
+
+
+
+
+@app.route("/contact", methods=['GET', 'POST'])
 def contact():
-    return render_template("contact.html", current_user=current_user)
+    form = Message()
+    if form.validate_on_submit():
+        message(f"Subject: Blog Site Message\n\n{form.name.data}\n{form.email.data}\n{form.phone.data}\n\nMessage:{form.message_text.data}")
+        form.name.data = ''
+        form.email.data = ''
+        form.phone.data = ''
+        form.message_text.data = ''
+    return render_template("contact.html", current_user=current_user, form=form)
 
 
 if __name__ == "__main__":
