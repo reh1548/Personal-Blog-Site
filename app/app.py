@@ -9,17 +9,18 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import relationship
 from dotenv import load_dotenv
+import smtplib, ssl
 load_dotenv()
 import os
 import smtplib
 # Import your forms from the forms.py
-from app.forms import *
+from forms import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("APP_API_KEY")
-my_mail = os.environ.get("MY_MAIL")
-password = os.environ.get("MY_MAIL_PASSWORD")
-recipient_mail = os.environ.get("RECIPIENT_MAIL")
+# my_mail = os.environ.get("MY_MAIL")
+# password = os.environ.get("MY_MAIL_PASSWORD")
+# recipient_mail = os.environ.get("RECIPIENT_MAIL")
 
 ckeditor = CKEditor(app)
 Bootstrap5(app)
@@ -258,18 +259,16 @@ def delete_post(post_id):
 def about():
     return render_template("about.html", current_user=current_user)
 
-
+my_mail = os.getenv("MY_MAIL")
+password = os.getenv("MY_MAIL_PASSWORD")
+recipient_mail = os.getenv("RECIPIENT_MAIL")
 
 
 def message(msg):
-    with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
-        connection.starttls()
-        connection.login(user=my_mail, password=password)
-        connection.sendmail(
-            from_addr=my_mail, 
-            to_addrs=recipient_mail, 
-            msg=msg
-        )
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as server:
+        server.login(my_mail, password)
+        server.sendmail(my_mail, recipient_mail, msg)
 
 
 
@@ -288,4 +287,4 @@ def contact():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=True, host='0.0.0.0')
