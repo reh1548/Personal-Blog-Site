@@ -17,7 +17,7 @@ import smtplib
 from forms import *
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get("APP_API_KEY")
+app.config['SECRET_KEY'] = sqlite:///posts.db
 # my_mail = os.environ.get("MY_MAIL")
 # password = os.environ.get("MY_MAIL_PASSWORD")
 # recipient_mail = os.environ.get("RECIPIENT_MAIL")
