@@ -17,10 +17,8 @@ import smtplib
 from forms import *
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = sqlite:///posts.db
-# my_mail = os.environ.get("MY_MAIL")
-# password = os.environ.get("MY_MAIL_PASSWORD")
-# recipient_mail = os.environ.get("RECIPIENT_MAIL")
+app.config['SECRET_KEY'] = os.environ.get("APP_API_KEY")
+
 
 ckeditor = CKEditor(app)
 Bootstrap5(app)
@@ -46,7 +44,7 @@ gravatar = Gravatar(app,
                     base_url=None)
 
 # CONNECT TO POSTGRES DB
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = sqlite:///posts.db
 db = SQLAlchemy()
 db.init_app(app)
 
