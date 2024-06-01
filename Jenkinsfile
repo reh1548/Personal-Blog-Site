@@ -1,41 +1,61 @@
 pipeline {
-  agent any
+    agent any
 
-  environment {
-    DOCKER_IMAGE_NAME = 'my-flask-app'
-    DOCKER_CONTAINER_NAME = 'my-flask-container'
-    CONTAINER_PORT = 5000
-    HOST_PORT = 80  // Change to desired host port if not using random
-  }
+    environment {
+        DOCKER_IMAGE_NAME = 'my-flask-app'
+        DOCKER_CONTAINER_NAME = 'my-flask-container'
+        CONTAINER_PORT = 5000
+        HOST_PORT = 80  // Change to desired host port if not using random
+    }
 
-  stages {
-    stage('Build') {
-      steps {
-        sh 'docker build -t my-flask-app .'
-        sh 'docker tag my-flask-app $DOCKER_IMAGE_NAME'
-      }
-    }
-    stage('Test') {
-      steps {
-        sh 'docker run my-flask-app python -m pytest app/tests/'
-      }
-    }
-    stage('Deploy') {
-      steps {
-        withCredentials([usernamePassword(credentialsId: "${DOCKER_REGISTRY_CREDS}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-          sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin docker.io"
-          sh 'docker push $DOCKER_BFLASK_IMAGE'
-          sh 'docker stop $DOCKER_CONTAINER_NAME || true'
-          sh 'docker rm -f $DOCKER_CONTAINER_NAME || true'
-          sh 'docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} --name $DOCKER_CONTAINER_NAME $DOCKER_IMAGE_NAME'
+    stages {
+        stage('Fetch GitHub Secrets') {
+            steps {
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')]) {
+                    script {
+                        def response = sh(script: '''
+                            curl -H "Authorization: token ${GITHUB_TOKEN}" \
+                            https://api.github.com/repos/reh1548/Personal-Blog-Site/actions/secrets \
+                            | jq -r '.secrets[] | "\(.name)=\(.value)"' > .env
+                        ''', returnStdout: true).trim()
+                        echo response
+                    }
+                }
+            }
         }
-      }
+        stage('Build') {
+            steps {
+                sh 'docker-compose build'
+            }
+        }
+        stage('Test') {
+            steps {
+                withCredentials([
+                    file(credentialsId: 'ENV_FILE', variable: 'ENV_FILE')
+                ]) {
+                    sh 'docker-compose run --env-file .env flask-app python -m pytest app/tests/'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'DOCKER_REGISTRY_CREDS', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')
+                ]) {
+                    sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin docker.io"
+                    sh 'docker-compose push'
+                    sh 'docker-compose down'
+                    sh '''
+                    docker-compose up -d --env-file .env
+                    '''
+                }
+            }
+        }
     }
-  }
 
-  post {
-    always {
-      sh 'docker logout'
+    post {
+        always {
+            sh 'docker logout'
+        }
     }
-  }
 }
