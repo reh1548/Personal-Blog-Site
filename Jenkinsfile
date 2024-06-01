@@ -6,11 +6,11 @@ pipeline {
     DOCKER_CONTAINER_NAME = 'my-flask-container'
     CONTAINER_PORT = 5000
     HOST_PORT = 80  // Change to desired host port if not using random
-    APP_API_KEY = env.APP_API_KEY
-    MY_MAIL = env.MY_MAIL
-    MY_MAIL_PASSWORD = env.MY_MAIL_PASSWORD
-    RECIPIENT_MAIL = env.RECIPIENT_MAIL
-    DATABASE_URL = env.DATABASE_URL
+    APP_API_KEY = "${env.APP_API_KEY}"
+    MY_MAIL = "${env.MY_MAIL}"
+    MY_MAIL_PASSWORD = "${env.MY_MAIL_PASSWORD}"
+    RECIPIENT_MAIL = "${env.RECIPIENT_MAIL}"
+    DATABASE_URL = "${env.DATABASE_URL}"
   }
 
   stages {
