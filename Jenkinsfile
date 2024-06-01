@@ -22,7 +22,7 @@ pipeline {
                          string(credentialsId: 'MY_MAIL', variable: 'MY_MAIL'),
                          string(credentialsId: 'MY_MAIL_PASSWORD', variable: 'MY_MAIL_PASSWORD'),
                          string(credentialsId: 'RECIPIENT_MAIL', variable: 'RECIPIENT_MAIL')]) {
-          sh 'docker run -e DATABASE_URL=$DATABASE_URL -e APP_API_KEY=$APP_API_KEY -e MY_MAIL=$MY_MAIL -e MY_MAIL_PASSWORD=$MY_MAIL_PASSWORD -e RECIPIENT_MAIL=$RECIPIENT_MAIL my-flask-app python -m pytest app/tests/'
+          sh 'docker run my-flask-app python -m pytest app/tests/'
         }
       }
     }
