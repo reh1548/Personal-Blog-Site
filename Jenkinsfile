@@ -34,6 +34,7 @@ pipeline {
           sh 'docker rm -f $DOCKER_CONTAINER_NAME || true'
           sh 'docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} --name $DOCKER_CONTAINER_NAME $DOCKER_IMAGE_NAME'
         }
+      }
     }
   }
 
