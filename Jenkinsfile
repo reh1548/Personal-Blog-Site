@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage('Copy .env') {
       steps {
-        sh 'cp /home/rahmed/Documents/.env ${WORKSPACE}/.env'
+        sh 'cp /var/lib/jenkins/.env ${WORKSPACE}/.env'
       }
     }
     stage('Build') {
