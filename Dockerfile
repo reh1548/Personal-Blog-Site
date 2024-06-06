@@ -12,6 +12,9 @@ COPY app/ .
 
 COPY tests/ app/tests/
 
+COPY .env .
+
 EXPOSE 5000
 
 CMD ["python", "app.py"]
+
