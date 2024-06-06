@@ -9,11 +9,6 @@ pipeline {
   }
 
   stages {
-    stage('Clone Repository') {
-      steps {
-        git 'https://github.com/reh1548/Personal-Blog-Site.git'
-      }
-    }
     stage('Copy .env') {
       steps {
         sh 'cp /home/rahmed/Documents/.env ${WORKSPACE}/.env'
