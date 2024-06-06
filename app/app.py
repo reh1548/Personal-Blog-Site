@@ -17,8 +17,7 @@ import smtplib
 from forms import *
 
 app = Flask(__name__)
-SECRET_KEY = os.urandom(32)
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SECRET_KEY'] = os.environ.get("APP_API_KEY")
 
 
 ckeditor = CKEditor(app)
