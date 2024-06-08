@@ -4,7 +4,7 @@ Here I have implemented a CICD pipeline using GitHub, Jenkins, Docker and Linux 
 
 
 ## How it Works?
-Any changes made in GitHub repoitory will be captured by Jenkins automatically and then build, test and deploy the Blog application to the `localhost`. 
+Any changes made in GitHub repository will be captured by Jenkins automatically and then build, test and deploy the Blog application to the `localhost`. 
 
 ## Setup:
 
